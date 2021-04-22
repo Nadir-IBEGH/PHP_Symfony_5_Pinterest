@@ -31,7 +31,7 @@ class PinsController extends AbstractController
      */
     public function index(PinRepository $pinRepository): Response
     {
-        $pins = $pinRepository->findBy([],['createdAt'=>'DESC']);
+        $pins = $pinRepository->findBy([], ['createdAt' => 'DESC']);
         return $this->render('pins/index.html.twig', compact('pins'));
     }
 
@@ -58,32 +58,45 @@ class PinsController extends AbstractController
         $form = $this->createForm(PinType::class, $pin);
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->em->persist($pin);
-             $this->em->flush();
-             return $this->redirectToRoute('app_pins');
+            $this->em->flush();
+            return $this->redirectToRoute('app_pins');
         }
-        return $this->render('pins/create.html.twig', ['form'=>$form->createView()]);
+        return $this->render('pins/create.html.twig', ['form' => $form->createView()]);
     }
 
     /**
-     * @Route("/pins/{id<[0-9]+>}/edit", name="app_pins_edit", methods={"GET","POST"})
+     * @Route("/pins/{id<[0-9]+>}/edit", name="app_pins_edit", methods={"GET","PUT"})
      * @param Pin $pin
      * @param Request $request
      * @return Response
      */
     public function edit(Pin $pin, Request $request): Response
     {
-     //   $pin = $pinRepository->findOneBy(['id'=>$id]);
-        $form = $this->createForm(PinType::class, $pin);
+        //   $pin = $pinRepository->findOneBy(['id'=>$id]);
+        $form = $this->createForm(PinType::class, $pin, ['method' => 'PUT']);
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
             return $this->redirectToRoute('app_pins');
         }
         return $this->render('pins/edit.html.twig', [
-            'pin'=>$pin,
-            'form'=>$form->createView()]);
+            'pin' => $pin,
+            'form' => $form->createView()]);
     }
+
+    /**
+     * @Route("/pins/{id<[0-9]+>}/delete", name="app_pins_delete", methods={"DELETE"})
+     * @param Pin $pin
+     * @return Response
+     */
+    public function delete(Pin $pin): Response
+    {
+        $this->em->remove($pin);
+        $this->em->flush();
+        return $this->redirectToRoute('app_pins');
+    }
+
 }
