@@ -3,13 +3,27 @@
 namespace App\Controller;
 
 use App\Entity\Pin;
+use App\Form\PinType;
 use App\Repository\PinRepository;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class PinsController extends AbstractController
 {
+
+
+    private $em;
+
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
+
     /**
      * @Route("/", name="app_pins")
      * @param PinRepository $pinRepository
@@ -22,7 +36,7 @@ class PinsController extends AbstractController
     }
 
     /**
-     * @Route("/pins/{id<[0-9]+>}", name="app_pin_show")
+     * @Route("/pins/{id<[0-9]+>}", name="app_pins_show", methods="GET")
      * @param Pin $pin
      * @param PinRepository $pinRepository
      * @return Response
@@ -30,5 +44,46 @@ class PinsController extends AbstractController
     public function show(Pin $pin, PinRepository $pinRepository)
     {
         return $this->render('pins/show.html.twig', compact('pin'));
+    }
+
+
+    /**
+     * @Route("/pins/create", name="app_pins_create")
+     * @param Request $request
+     * @return Response
+     */
+    public function create(Request $request)
+    {
+        $pin = new Pin;
+        $form = $this->createForm(PinType::class, $pin);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $this->em->persist($pin);
+             $this->em->flush();
+             return $this->redirectToRoute('app_pins');
+        }
+        return $this->render('pins/create.html.twig', ['form'=>$form->createView()]);
+    }
+
+    /**
+     * @Route("/pins/{id<[0-9]+>}/edit", name="app_pins_edit", methods={"GET","POST"})
+     * @param Pin $pin
+     * @param Request $request
+     * @return Response
+     */
+    public function edit(Pin $pin, Request $request): Response
+    {
+     //   $pin = $pinRepository->findOneBy(['id'=>$id]);
+        $form = $this->createForm(PinType::class, $pin);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $this->em->flush();
+            return $this->redirectToRoute('app_pins');
+        }
+        return $this->render('pins/edit.html.twig', [
+            'pin'=>$pin,
+            'form'=>$form->createView()]);
     }
 }
