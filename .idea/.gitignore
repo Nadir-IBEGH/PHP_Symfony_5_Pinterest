@@ -1,0 +1,8 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Datasource local storage ignored files
+/../../../../../../../../../:\xampp\htdocs\php\Symfony\LES_TEACHERS_DU_NET\Symfony5\PHP_Symfony_5_Pinterest\.idea/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
