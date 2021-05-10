@@ -5,7 +5,7 @@
 {% block body %}
     <article>
         <h2>{{ pin.title }}</h2>
-        <p>{{ pin.description }}</p>
+        <p>{{  pin.description |u.truncate(20, '...', false) }} </p>
     </article>
     <a href="{{ path('app_pins_edit', {id:pin.id}) }}">Edit</a> |
     <a href="#" onclick="event.preventDefault();confirm('Are you confirm') && document.getElementById('js-delete-form').submit();">Delete</a> |
