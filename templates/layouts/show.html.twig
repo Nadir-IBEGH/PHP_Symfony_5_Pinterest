@@ -1,4 +1,4 @@
-{% extends 'layouts/base.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title pin.title %}
 
@@ -8,7 +8,7 @@
         <p>{{  pin.description |u.truncate(20, '...', false) }} </p>
     </article>
     <a href="{{ path('app_pins_edit', {id:pin.id}) }}">Edit</a> |
-    <a href="#" onclick="event.preventDefault();confirm('Are you confirm') && document.getElementById('js-delete-form').submit();">Delete</a> |
+    <a href="#" onclick="event.preventDefault();confirm('Are you confirm ?') && document.getElementById('js-delete-form').submit();">Delete</a> |
     <a href="{{ path('app_pins') }}">Go Back</a>
     <form id="js-delete-form" action="{{ path('app_pins_delete', {id:pin.id}) }}" method="post" style="display: none">
         <input type="hidden" name="crsf_token" value="{{ csrf_token('pin_deletion_' ~ pin.id) }}">

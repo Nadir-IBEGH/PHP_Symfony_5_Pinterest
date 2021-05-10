@@ -6,7 +6,28 @@
     {# Run `composer require symfony/webpack-encore-bundle`
            and uncomment the following Encore helpers to start using Symfony UX #}
     {% block stylesheets %}
+
         {# {{ encore_entry_link_tags('app') }} #}
+        <style>
+            .alert {
+                padding: 10px;
+                color: white;
+                text-align: center;
+            }
+
+            .alert-success {
+                background-color: green;
+            }
+
+            .alert-info {
+                background-color: blue;
+            }
+
+            .alert-alert {
+                background-color: red;
+            }
+        </style>
+
     {% endblock %}
 
     {% block javascripts %}
@@ -14,6 +35,7 @@
     {% endblock %}
 </head>
 <body>
+{{ include('layouts/partials/_flash_messages.html.twig') }}
 <nav>
     <ul>
         <li><a href="{{ path('app_pins') }}">Home</a></li>
@@ -21,6 +43,7 @@
     </ul>
 </nav>
 {% block body %}
+
 
 {% endblock %}
 </body>

@@ -15,14 +15,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class PinsController extends AbstractController
 {
 
-
     private $em;
 
     public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
     }
-
 
     /**
      * @Route("/", name="app_pins")
@@ -61,6 +59,7 @@ class PinsController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->persist($pin);
             $this->em->flush();
+            $this->addFlash('success','Pin successfully created !!');
             return $this->redirectToRoute('app_pins');
         }
         return $this->render('pins/create.html.twig', ['form' => $form->createView()]);
@@ -80,6 +79,7 @@ class PinsController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
+            $this->addFlash('success','Pin successfully updated !!');
             return $this->redirectToRoute('app_pins');
         }
         return $this->render('pins/edit.html.twig', [
@@ -98,8 +98,8 @@ class PinsController extends AbstractController
         if ($this->isCsrfTokenValid('pin_deletion_' . $pin->getId(), $request->request->get('crsf_token'))) {
             $this->em->remove($pin);
             $this->em->flush();
+            $this->addFlash('info','Pin successfully deleted !!');
         }
         return $this->redirectToRoute('app_pins');
-
     }
 }
