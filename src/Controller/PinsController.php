@@ -23,7 +23,7 @@ class PinsController extends AbstractController
     }
 
     /**
-     * @Route("/", name="app_pins")
+     * @Route("/", name="app_home")
      * @param PinRepository $pinRepository
      * @return Response
      */
@@ -60,7 +60,7 @@ class PinsController extends AbstractController
             $this->em->persist($pin);
             $this->em->flush();
             $this->addFlash('success','Pin successfully created !!');
-            return $this->redirectToRoute('app_pins');
+            return $this->redirectToRoute('app_home');
         }
         return $this->render('pins/create.html.twig', ['form' => $form->createView()]);
     }
@@ -80,7 +80,7 @@ class PinsController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
             $this->addFlash('success','Pin successfully updated !!');
-            return $this->redirectToRoute('app_pins');
+            return $this->redirectToRoute('app_home');
         }
         return $this->render('pins/edit.html.twig', [
             'pin' => $pin,
@@ -100,6 +100,6 @@ class PinsController extends AbstractController
             $this->em->flush();
             $this->addFlash('info','Pin successfully deleted !!');
         }
-        return $this->redirectToRoute('app_pins');
+        return $this->redirectToRoute('app_home');
     }
 }
