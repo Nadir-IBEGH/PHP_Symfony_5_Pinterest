@@ -19,7 +19,7 @@
                         <time datetime="{{ pin.createdAt|date('Y-m-d H:i:s') }}">
                             {{ pin.createdAt|ago }}
                         </time>
-                        by [OWNER FULL NAME]
+                        by {{ pin.user.fullName }}
                     </small>
                 </p>
                 <p class="pl-3 pb-3">{{ pin.description }} </p>
