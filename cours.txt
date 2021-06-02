@@ -1,0 +1,700 @@
+----------------------------------------------- Video 01-------------------------------------------
+cours :  Pinterrest
+
+lister tout les pins
+affichier le détail d'un pin
+modifier un pin
+supprimer un pin
+
+modifier nos informations de profil
+modifier notre mot de passe
+réinitialiser notre mot de passe
+se connecter 
+vérifier notre adresse email
+
+
+https://www.youtube.com/watch?v=_WS5ZNl043s&t=26s
+
+
+Etapes : 
+
+1. creation du projet :
+
+symfony new panterest --full
+
+symfony open:local   --> pour ouvrir le projet 
+
+pour l'erreur no driver found alors ajouter la ligne suivante dans le fichier .env
+
+DATABASE_URL="mysql://root:@127.0.0.1:3306/symshop?serverVersion=mariadb-10.4.11"
+
+
+php bin/console doctrine:database:create      --- > pour créer la base de données une fois que on a repris le projet
+
+
+créer l'entité Pin avec title et description
+
+créer la base de données :
+
+php bin/console doctrine:database:create
+
+php bin/console doctrine:database:drop --force --> pour supprimer la base de données
+
+php bin/console doctrine:migration:status --show-versions
+
+ 
+installer le bundle PsyshBundle  pour l'affichage des pins 
+
+https://www.youtube.com/watch?v=_WS5ZNl043s&t=26s
+
+composer require --dev theofidry/psysh-bundle
+
+pour séparer le singulier du pluriel  on crée une extension de twig : pluralize
+
+make:twig-extension  => Creates a new Twig extension class
+
+
+pour créer une extension twig lors on crée un class extension comme ceci :
+
+php bin/console make:twig-extension puis on donne le nom de la classe (AppExtension)
+
+     * @Route("/pins/{id<[0-9]+>}", name="show_pin")   ==      * @Route("/pins/{id<\d+>}", name="show_pin")
+
+php bin/console debug:router pour voir les routes de notre application
+
+
+pour personnaliser mes page d'érreur (404 par exemple) alors on va taper tout somplement sur google customize error page symfony
+
+https://symfony.com/doc/current/controller/error_pages.html#overriding-the-default-error-templates
+
+ajouter les champs cretedAt and updatedAt
+
+pour cela ajouter dans l'entité pin : HasLifecycleCallbacks
+
+https://symfony.com/doc/current/doctrine/events.html
+
+
+ * @ORM\HasLifecycleCallbacks  => vaut dire qu'on écouter les différents évenements du cycle de vie de l'entité
+
+ l'annotation se rajoute avant de nom de l'entité 
+
+prePersist/postPersist, preUpdate/postUpdate .......
+
+
+DateTimeImmutable  -> donne un objet date qu'on ne peut pas modifier
+
+Pour chanegr le fusion horaire alors on ajoute dans le projet un fichier php.ini et on mets le fusion horraire qu'on souhaite dedans
+stoper le server puis le relancer pour que les modifs du fichier php.ini soit prise en compte
+
+
+php bin/console doctrine:migrations:migrate prev   -- revenir a la version precedente de la migration (annulez la dernière migration)
+
+first - Migrate down to before the first version.
+prev - Migrate down to before the previous version.
+next - Migrate up to the next version.
+latest - Migrate up to the latest version.
+note : on peut par default a un champs une valeur avec une annotation
+par exemple pour les champs date existant déja dans la base de données
+
+    /**
+     * @ORM\Column(type="datetime", options={"default" : "CURRENT_TIMESTAMP"})
+     */
+    private $createdAt;
+
+    on donne au champs existant createdAt dans la base de données une valeur qui est la date actuelle
+
+----------------------------------------------- Video 02-------------------------------------------
+
+
+tous ce qu'on peut trouver dans debug:autowiring on peut l'injecter (injection de dépendance)
+
+   Pour envoyer un formulaire sans validation     
+   <input type="submit" value="Update Pin" formnovalidate/>
+
+https://openclassrooms.com/forum/sujet/symfony-4-compteur-de-visites-uniques
+
+
+verbe http i; y en a plusieurs (pas uniquement 4)
+
+https://developer.mozilla.org/fr/docs/Web/HTTP/Methods
+
+le formulaire delete pin n'ai pas protéger avec un token CSRF donc il faut le proteger 
+
+voir le cours Attaques CSRF ou XSRF:
+https://www.youtube.com/watch?v=4xQmrsOh1Oc
+
+cours de git https://www.youtube.com/watch?v=zNxGgI6O5NE&list=PLlxQJeQRaKDRBd_FazeI7gLq5wyrt7f7J
+ 
+$request->query     --> get
+$request->request   --> post
+
+pour voir les données soumises alors on a 
+
+dd($request->request->all());  dans le controller
+
+dd($request->request->get('nom_du_champs_formulaire'));  dans le controller
+
+----------------------------------------------------------Video 03-----------------------------------------------
+
+Erreur après composer update (Correction)
+
+composer show pour voir tout les packages installer 
+
+composer show doctrine/doctrine-migrations-bundle    pour voir le bundle doctrine 
+
+php bin/console doctrine:database:create   --créer la base de données
+
+correction erreur migration 
+
+composer unpack orm-pack   --> permet de décomposer orm-pack en plusieurs bundle/librairies dans le fichier composer.json 
+ 
+  "symfony/orm-pack": "*",
+
+   ca donne      
+
+        "doctrine/doctrine-bundle": "^2.3"
+        "doctrine/doctrine-migrations-bundle": "^3.1",
+        "doctrine/orm": "^2.8",
+
+
+il ya une répétition du formulaire edit/create donc en crée un entre fichier twig qui va remplacer les deux 
+
+
+<input type="submit" value="{{ submitButtonText }}" formnovalidate/>
+
+est equivalent a 
+
+<input type="submit" value="{{ submitButtonText|default('Create Pin') }}" formnovalidate/>
+
+est équivalent à 
+
+<input type="submit" value="{{ submitButtonText ?? 'Create Pin' }}" formnovalidate/>
+
+
+message d'erreur : pour voir a quoi vont correpondre nos messages en prod en fait ceci :
+
+dans le fichier .env en place
+
+
+APP_ENV=prod
+
+puis
+
+https://127.0.0.1:8000/error/404
+
+ou 
+
+https://127.0.0.1:8000/error/500   ainsi de suite
+
+on peut biensur costumiser les pages d'érreurs
+
+si un text est très long en peut le trunquer ( filtre u )
+
+
+pour gérer l'affichage de la description en fait ceci : 
+
+<p>{{  pin.description |u.truncate(10, '...', false) }} </p>
+composer require twig/string-extra
+
+https://twig.symfony.com/doc/3.x/filters/u.html  --> doc
+
+pour affichier depuis quand l'élément a été créé alors en ajoute le bundle :
+
+https://github.com/KnpLabs/KnpTimeBundle
+
+composer require knplabs/knp-time-bundle
+
+----------------------------------------------------------Video 04---------------------------------------------------------
+
+ajouter les messages flash
+
+gérer la validation du formulaire
+
+pour voir la liste de validation possible alors va dans vendor/symfony/validator/Constraints
+
+ajouter bootstraap pour styliser notre application
+
+puis ajouter un theme symfony 
+
+https://symfony.com/doc/current/form/form_themes.html
+
+ajouter un layout dans twig.yaml : 
+
+form_themes: [ 'bootstrap_4_layout.html.twig']
+
+error dans edit/formulaire : 
+
+Expected argument of type "string", "null" given at property path "title".
+
+dans setTitle(string $title) en change en setTitle(?string $title) pour accepter les valaurs null
+
+
+un bundle créé par le développeur 
+
+https://www.youtube.com/watch?v=sxLceVKcWoc&t=0s
+
+ajouter un header
+
+regarder absolument les astuces twig
+
+https://www.youtube.com/watch?v=E4nUjUsxJNc&list=PLlxQJeQRaKDS_Kd9ZCLy4ViK3-5y5AnGC
+ 
+
+
+meetre du style : changer la police 
+
+montserrat font 
+
+
+https://fonts.google.com/specimen/Montserrat?selection.family=Montserrat#standard-styles
+
+on choisit bold 700
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+              integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
+              crossorigin="anonymous">
+rajouter aussi :
+font-family: 'Montserrat', sans-serif;
+
+    html, body {
+                font-family: 'Montserrat', sans-serif;
+            }
+
+
+webpack (pour mieux organiser les fichiers js css et png
+
+en symfony en a webpack encore  
+
+installer webpack (bundle webpack-encore-bundle)
+
+en faisant : composer require encore (en utilise une alias mais il y en a beaucoup) 
+
+
+https://flex.symfony.com/
+
+nodes_modules et a peu près l'equivalent en javascript du vendor en symfony
+
+package.json dans le monde javascript est equivalent a composer.json en symfony
+
+ou peut utiliser yarn ou npm c'est pareil
+
+il suffit de taper yarn pour que les depandences s'installe
+
+pour executer les commandes de package.json on procède comme ceci :
+
+-> npm run nom_de_la_commande ( dev, watch, build, ...)
+
+-> yarn  nom_de_la_commande   ( dev, watch, build, ...)
+
+
+
+-----> lancer yarn dev  --> va générer des fichiers dans public/build
+
+pour utiliser Saas il faut activer dans webpack.config.js .enbleSassLoader() // en enlevant les commantaires
+
+il faut a chaque fois qu'on modifie webpack.config.json on doit relancer yarn watch
+
+----> apprendre saas
+
+webpack encore bootrstraap
+
+yarn add bootstrap --dev
+
+
+puis yarn watch
+
+pour ajouter le javascript au boorstraap en install jquery 
+
+
+yarn add jquery popper.js --dev
+
+https://symfonycasts.com/screencast/webpack-encore
+
+
+si on est en production on utilise : yarn build pour générer les fichiers a utiliser en prod  
+
+
+-------------------------------------------------------------video 5--------------------------------------------------------
+
+upload d'images
+
+
+Ajouter un champs dans le pin imageName dans le Pin
+
+
+
+
+regarder la doc symfony, elle est bien faites
+
+
+1. ajouter le champs dans l'entité Pin
+
+remarque : on ne sauvegarde pas l'image dansla base de données mais juste le lien/nom de l'image
+
+on stock les images sur le serveur 
+
+lors de la creation du pin l'image n'ai pas obligatoire : donc le préciser lors de l'ajout de champs imageName qu'il peut etre null dans la base de données
+
+
+Une solution : en utilise le bundle : vich uploader
+
+https://github.com/dustin10/VichUploaderBundle
+ 
+
+Pour installer le bundle :
+
+composer require vich/uploader-bundle
+
+
+taper yes pour confirmer l'execution de la recette, elle demande une conifmration car elle n'ai pas officiel
+
+regarder la documentation pour voir comment utiliser le bundle
+
+suivi la documentation pour faire les configuration nécessaires
+
+une fois qu'on a fini l'étape 2 on fait ceci :
+
+php bin/console cache:clear
+
+
+suivi ....
+
+une erreur :
+
+LiipImagineBundle must be installed and configured for using "imagine_pattern" option.
+
+enlever dans le code :                 'imagine_pattern' => '...',
+
+
+valider la taille des images : imagesize symfony dans google  
+
+https://symfony.com/doc/current/reference/constraints/Image.html
+
+pour rendre l'image obligatoire dans le formulaire il suffit de rajouter Assert/NotNull or NotBlanc
+
+NotBlanc contient dedans NotNull
+
+
+$options['method']  dans formBuilder (PUT/POST)
+
+on peut utiliser aussi :  $options['data']     -->video 5 minutes 42 
+
+
+
+Thumbnail Images  pour afficher les images en petit forme :
+pour cela on utilise le bundle : liip imagine 
+
+https://github.com/liip/LiipImagineBundle
+
+$ composer require liip/imagine-bundle
+
+par defaut en utilise "gd" mais c'est intéressant de voir comment utiliser "gmagick" (regarder sur internet comment l'installer)
+
+
+important : tu peux rechercher les réponses au bugs dans les issues 
+
+
+en production pour le chargement rapide d'images en utilise symfony Messenger (regarder la video sur youtube) 
+
+vider le cache en vas de problème 
+
+
+rechercher sur internet liip imagine filter_sets : (pour continuer la configuration)
+
+https://symfony.com/doc/current/bundles/LiipImagineBundle/filters.html
+
+https://symfony.com/doc/current/bundles/LiipImagineBundle/filters/sizing.html#thumbnails
+
+
+Afficher le nom du fichier dans le input : avec jquery
+
+
+une fois que  le js est ajouté alors lancer yarn dev ou/  yarn watch   --> pour webpack
+
+yarn build :  pour la production (évite les problème du cache)
+
+
+
+ajouter une margin-top dans le sass : 
+
+.vich-image .form-check {
+  @extend .mt-3    ----------> en hérite les classes de bootstraap
+} 
+
+
+Pour afficher l'image : vitch uploader
+
+https://github.com/dustin10/VichUploaderBundle
+https://github.com/dustin10/VichUploaderBundle/blob/master/docs/generating_urls.md
+
+
+
+ajouter un filtre pour que l'image soit petite dans twig
+
+liip imagine bundle 
+
+a chaque fois quand modifie le js et css en fait yarn build
+
+& dans scss : vaut dire ou est ce qu'on se trouve.
+
+copier le dossier images de build vers asset puis ajouter dans  webpack.config.js :
+
+  .copyFiles({
+        from: './assets/images',
+        pattern: /\.(png|jpg|jpeg)$/,
+        // to path is relative to the build directory
+        to: 'images/[path][name].[ext]'
+    })
+
+ 
+avec ce code lorsque qu'on fait yarn build les images seront copier depuis asset vers le build
+
+------------------------------------------video 6 ---------------------------------------------
+
+composer recipes pour voir s'il y a d'éventuel mis a jour pour les bundle
+
+Pour mettre a jour un bundle on procede de cette facon : 
+
+1. composer recipes : afficher tout les bundle donc les bundle qui ont besoin d'une mise à jour
+
+2. composer recipes + nom_bundle_a_mettre_jour   ---> ca donne la commande a executer pour mettre a jour le bundle
+
+
+commit : mettre a jour quelques recettes
+
+pour revenir a la dernière version d'un fichier après un git status on fait :
+git restore _nom_du_fichier
+
+créer en entité user 
+
+User :
+    - firstName
+    - lastName
+    - email
+    - password
+    - createdAt  (date creation)
+    - updatedAt  (date dernière modification de ses infos)
+
+Une relation entre pin et user
+
+    - un utiliateur peut créer un ou plusieurs pins
+
+
+on peut bien créer l'entité user comme nous l'avons fait avec pin cad: 
+php bin/console make:entity puis on donne le nom de d'entité (User) 
+mais pour cela on a une commande qui ne s'implifie les chose : c'est la commande 
+  
+make:user   -->pour la voir il suffit de taper php bin/console make:entity (permet de voir la liste de toute les commandes disponibles)
+
+
+supprimer tout les fichiers .gitignore dans le src (dans les sous repertoire)
+
+
+editer l'entité user pour ajouter de nouveaux champs : 
+
+php bin/console make:entity User 
+
+firstName
+lastName
+
+
+avant de faire make:migration rajouter dans l'entité User :
+
+ * @ORM\Table(name="users")
+
+ pour que le non de la table soit users au lieu de user
+
+
+
+utiliser psysh :  pour créer des utilisateur
+
+1. php bin/console psysh
+
+2. use App\Entity\User;
+3. $user1 = new User;
+4. dump($user1)  ->  en voit l'entité user avec tous les champs null
+5. $user1->setFisrtName('nadir');
+6. dump($user1)  -> on voit que le prenom a été modifié
+
+on ne va pas ecrire le code, il doit etre haché avec : security:encode-password (commande existante dans php bin/console 
+
+pour encoder un mot de passe avec psysh :
+
+php bin/console security:encode-password  
+
+on ne demande de taper le mot de passe qui ne sera pas visible bien sur : je tape *nadir-
+
+ca va me générer un mot ded passe hacher :
+
+je copie le motde passe :
+
+au lieu de faire 
+
+$user1->setPassword('*nadir-');  je fais a la place  $user1->setPassword('le mot de passe hacher générer par la commande php bin/console security:encode-password '); 
+
+
+7. $user1->setPassword('$argon2id$v=19$m=65536,t=4,p=1$c1BrWGl6QW80NkpkOVBUVA$6J2hkuHduEIyfvI0px6NKho5suy5Zta9jZqgG2HGeq8');
+8. $em = $container->get('doctrine')->getManager();
+9. $em -> persist();
+10. $em -> flush();
+
+pour le même mot de passe les hash seront différents : grace a une fonction de hachage 
+
+pour hacher un mot de passe il est recommandé de ne pas utiliser md5 car il ya des algorithme beaucoup plus sécurisé
+
+
+remarques : 
+
+hash('sha256', 'secret') -> produit un hachage de 64 caractère 
+
+alors que md5('secret')-> produit un hachage de 32 caractère
+
+hash('sha512', 'secret') -> produit un hachage de 128 caractère 
+
+avec md5 : hacher le même nom donne toujours le même résultat
+
+note securite : la fonction de hachage qui donne la meme cle pour le même mot c'est dangereux car si on a un mot de passe d'un utilisateur on aura l'autre mot de passe 
+des utilisateurs qui ont une clé qui se resemble.
+
+on peut utiliser dans security.yaml plusieurs encoder possible 
+
+note programmation :  une méthode qui a un corp vide c'est une méthode qui retourne null
+
+public function nadir () {}
+
+est equivalent a 
+
+public function nadir () { return null; }
+
+
+ajouter une relation entre user et pin pour que chaque pin soit associer a un utilisateur 
+
+chaque utilisateur va avoir entre 0 et n pin 
+chaque pin appartient a un et un seule user 
+donc dans table pin on va avoir une clé étranger du l'id du user (dans le modele relationnel de données)
+
+pin  ---------{ManyToOne  }---------------user
+
+comment l'ajouter : avec dosctrine :
+
+on va ajouter user dans l'entité pin comme ceci :
+
+1. php bin/console make:entity pin
+2.  ?
+3. ManyToOne
+4. fait attention au question posé yes/no -> on ne doit pas avoir de pin orphelin donc quand on supprime un user alors on supprime tout les pins associés à cette user.
+
+Quand on fait la migration on recontre problème de clè étranger (qui ne doit pas etre null) alors il y a plusieurs manière de résoudre le problème :
+1. si la base de données est déja en production :
+
+en va changer : 
+
+        $this->addSql('ALTER TABLE pins ADD user_id INT NOT NULL');
+
+en 
+
+        $this->addSql('ALTER TABLE pins ADD user_id');  puis on ajoute des valeurs au différents pins
+
+2. si la base de donnée est en dev comme dans notre cas alors :
+
+   1. supprimer ma base de données : php bin/console: doctrine:databse:drop --force
+   2. créer à nouveau notre base de données : php bin/console doctrine:database:create
+   3. appliquer les migrations : php bin/console doctrine:migrations:migrate
+
+
+On utilise des fixtures pour générer de fausses données (faux pins et faux users)
+
+  
+1 . php bin/console psysh
+2. use 	App\Entity\{User, Pin};
+3. $u1 = new User;
+4. $u1->setFistName('u 1 prenom');
+5. $u1->setLastName('u 1 nom');
+générer un mot de passe avec security:encode-password 
+donner secret comme mot de passe :
+php bin/console security-encode-password 
+puis taper secret --> un mot de passe hacher sera créer alors 
+
+1$TlZGRHRhaTR4Lk9ONmR2bQ$jFYInrVqJWzAPbXSUWByTeybOavP+K6kYDerAt7Tf+4
+
+6.$u1->setPasswrd('1$TlZGRHRhaTR4Lk9ONmR2bQ$jFYInrVqJWzAPbXSUWByTeybOavP+K6kYDerAt7Tf+4');
+
+7. dump($u1); --> pour la vérification 
+8. $u1->setEmail('u1@gmail.com');
+9. $em = $container -> get('doctrine')->getMnager();
+10. $em ->persist($u1);
+11. $em ->flush();
+
+---> céer le pin :
+
+$p1 = new Pin;
+
+
+ 
+Pour ce message d'érreur :
+
+Doctrine\ORM\ORMException with message 'The EntityManager is closed.'
+
+En fait ceci :
+
+>>> $em = $container->get('doctrine')->resetManager();
+
+
+si l'entité manager est fermé on peut faire ceci :
+
+php bin/console psysh   (redémarre à nouveau)
+
+au lieu de faire {{ pin.user.firstName }} {{ pin.user.lastName }} on pourra faire : {{ pin.fullName }}
+
+pour cela ajouter une méthode dans l'entité User : 
+
+
+Video a regarder : Authentification et Autorisation avec Symfony 5
+https://www.youtube.com/watch?v=wCvGbv6E0AI
+
+
+----------------------------------------------Video 7---------------------------------------------
+
+text-break : pour éviter que le text sort du div
+
+
+Sécurité vaut dire deux choses : 
+  - Authentification (qui vous etes) gérer par les firewalls
+  - Autorisation (droits nécessaires)
+
+dans symfony la sécurité est gérer par le bundle SecurityBundle
+
+Pour acceder à l'utilisateur dans twig: {{ app.user }}
+
+pour générer un controller d'authentification (LoginController) on utilise une commande make:auth
+
+1. php bin/console make:auth
+2. What style of authentication do you want? [Empty authenticator]:
+  [0] Empty authenticator
+  [1] Login form authenticator
+ 
+>Reponse : 1
+3. The class name of the authenticator to create (e.g. AppCustomAuthenticator):
+
+Reponse : LoginFormAuthentificator 
+
+4.  Choose a name for the controller class (e.g. SecurityController) [SecurityController]:
+ >  Entrer
+5. Do you want to generate a '/logout' URL? (yes/no) [yes]:
+ > Enter
+
+
+class LoginFormAuthentificator :
+
+
+Toute les requete appelle la méthode supports() (il suffit de mettre un die dd('stop');
+
+$request->attributes->get('_route')   dans support permet d'acceder a la route courante 
+
+
+pour recupérer les données de la requete on fait :
+
+ $request->request->get('email')  --> GET
+ $request->query->get('email')   --> POST
+
+
