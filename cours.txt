@@ -737,3 +737,33 @@ pour notre projet il n'y a pas de différence entre symfony console et php bin/c
 par contre si on travail avec  un projet docker vaut mieux utiliser symfony console (il prend en compte les variables d'environnements)
 
 Securiser l'accès à https://127.0.0.1:8000/pins/create (accès autorisé
+
+Une facon de récupérer l'utilisateur connecté en dhors du controller on fait ceci :
+
+$user = $token->getUser();  comme dans la méthode getUser() dans AbstractController
+
+
+pour recupérer le $user dans une extension par exemple ( on a pas accès a $token ni $this->getUser();)
+
+on fait ceci :
+
+symfony console security debug:autowiring security  et on tombe sur
+
+Symfony\Component\Security\Core\Security (security.helper)
+
+dans le constructeur :
+
+use Symfony\Component\Security\Core\Security;
+
+private $security;
+public function  __consctruct (Security $security) {
+   $this->security = $security;
+}
+
+dans une methode :
+
+$user = $security->getUser();
+
+dans la classe Security.php on a une méthode getUser() --> permet de récupérer l'utilisateur
+
+
