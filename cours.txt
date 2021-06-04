@@ -735,3 +735,5 @@ https://symfony.com/doc/current/security/impersonating_user.html
 pour notre projet il n'y a pas de différence entre symfony console et php bin/console
 
 par contre si on travail avec  un projet docker vaut mieux utiliser symfony console (il prend en compte les variables d'environnements)
+
+Securiser l'accès à https://127.0.0.1:8000/pins/create (accès autorisé
