@@ -698,3 +698,40 @@ pour recupérer les données de la requete on fait :
  $request->query->get('email')   --> POST
 
 
+php bin/console debug:autowiring csrf  --> pour voir s'ilya des service csrf qu'on peut injecter (il y en a biensur)
+
+On peut récuperer le UserRepository comme ceci :
+
+$user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $credentials['email']]);
+
+Comme on peut injecter le service dans le constructeur comme ceci :
+
+UserRepository $userRepo puis
+
+$user = $this->userRepo->findOneBy(['email' => $credentials['email']]);
+
+
+
+si en veux acceder a la session on peut utiliser le service :
+
+php bin/console debug:autowiring session    -> SessionInterface
+
+une fois que connecter bloquer l'accès a la page de connexion
+
+----------------------------------------------------------------- * Video 8 * -----------------------------------------------------------
+
+Autorisation : on vérifie si on a les droits nécessaires pour éffectuer différentes actions (par exemple editer un pin : on doit etre de propriètaire)
+
+alias et racourcis terminale :
+
+https://www.youtube.com/watch?v=jazXBDsKS5E&t=0s
+
+revoir la partie translation minutes 22
+
+switch user symfony  --> google (pour se connecter a la place d'une autre personne)
+
+https://symfony.com/doc/current/security/impersonating_user.html
+
+pour notre projet il n'y a pas de différence entre symfony console et php bin/console
+
+par contre si on travail avec  un projet docker vaut mieux utiliser symfony console (il prend en compte les variables d'environnements)
