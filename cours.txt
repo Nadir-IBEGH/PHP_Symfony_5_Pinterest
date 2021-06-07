@@ -766,4 +766,98 @@ $user = $security->getUser();
 
 dans la classe Security.php on a une méthode getUser() --> permet de récupérer l'utilisateur
 
+le composant string est très intéressant a utiliser pour les chaines de caractères :
+
+https://symfony.com/doc/current/components/string.html
+
+symfony console debug:autowiring slug    et on tombe sur ceci :
+
+ Creates a URL-friendly slug from a given string.
+ Symfony\Component\String\Slugger\SluggerInterface (slugger)
+
+----------------inscription------------------
+
+Faire la partie inscription de user :
+
+Crée un nouveau système de formulaire d'inscription :
+
+symfony console make:registration-form     Creates a new registration form system
+
+reponse au question
+
+y
+y
+
+on ne demande d'installer : composer require symfonycasts/verify-email-bundle
+
+pour l'adresse a utiliser pour l'émail d'envoie on utilise : noreplay@nadir.com
+
+pour cette question :
+ Would you like to include the user id in the verification link to allow anonymous email verification? (yes/no) [no]:
+ >
+réponder par no
+
+
+What "name" should be associated with that email address? e.g. "Acme Mail Bot":
+ > Panterest
+
+ Do you want to automatically authenticate the user after registration? (yes/no) [yes]:
+ > yes
+
+répondez par oui :
+
+etapes suivante :
+
+ Next:
+ 1) Install some missing packages:
+      composer require symfonycasts/verify-email-bundle
+ 2) In RegistrationController::verifyUserEmail():
+    * Customize the last redirectToRoute() after a successful email verification.
+    * Make sure you're rendering success flash messages or change the $this->addFlash() line.
+ 3) Review and customize the form, controller, and templates as needed.
+ 4) Run "php bin/console make:migration" to generate a migration for the newly added User::isVerified property.
+
+ Then open your browser, go to "/register" and enjoy your new form!
+
+minute 59 pour erreur envoie de mail variable
+
+il y a une érreur qui apparait concerne le champs : is_verified
+il faut jouer une migration pour prendre le champs en compte
+
+important pour récupérer un champs du formulaire qui n'appartient pas à l'entité User en fait ceci :
+
+$form->get('plainPassword')->getData();   --> pour récupérer le mot de passe ou bien
+$form['plainPassword']->getData();
+
+pour ajouter dans le formulaire un champs qui n'existe pas dans d'entité alors on rajoute 'mapped' => 'false'
+
+La configuration d'envoie de mail en local est différente de celle a utiliser en production
+
+mailtrap a utiliser uniquement en développement
+
+
+au lieu de faire dans RegisterController :
+             $entityManager = $this->getDoctrine()->getManager();
+en fait ceci
+              injecter le service  : EntityManagerInterface dans la méthode register
+
+
+pour tester l'envoie de mail en local (sans internet)  en utilise par exemple maildev (ou mailcatcher)
+
+doc pour l'installation :
+https://maildev.github.io/maildev/
+
+
+Utiliser messenger component pour envoyer des messages en liste d'attentes, regarder la video de honoré sur youtube
+
+principe : en attend pas a ce que le mail envoyé pour confirmé a l'utilisateur son inscription car ca peut etre long
+
+donc on confirme à l'utilisateur que son inscription est bonne puis en lui envoie le mail en arrière plan.
+
+https://symfony.com/doc/current/components/messenger.html
+
+Si on est connecté on affiche pas le formualire d'inscription
+
+
+
 
