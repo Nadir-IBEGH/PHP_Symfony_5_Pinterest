@@ -859,5 +859,5 @@ https://symfony.com/doc/current/components/messenger.html
 Si on est connecté on affiche pas le formualire d'inscription
 
 
-
+Gérer la partie validation de données
 
