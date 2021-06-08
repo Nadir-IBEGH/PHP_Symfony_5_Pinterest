@@ -861,3 +861,25 @@ Si on est connecté on affiche pas le formualire d'inscription
 
 Gérer la partie validation de données
 
+
+ Pour empecher qu'une adreese email soit utiliser deux fois on a cette validation dans l'entité user:
+
+ * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
+
+ ici nous avons utiliser l'email comme un champs unique mais on peut bien utiliser d'autres attributs comme firstname, ...
+
+ remarque on peut aussi empecher qu'il aurrait une combinaison cad : pas de user avec le meme nom et prénom :
+
+  * @UniqueEntity(fields={"firstname" , "lastname"}, message="adapter ton message")
+
+
+  pour vérifier que l'email est unique et aussi que le firstname est unique alors on va ajouter deux fois @UniqueEntity on sépare les champs email et entite
+
+    @UniqueEntity(fields={"email"}, message="adapter ton message")
+    @UniqueEntity(fields={"firstname"}, message="adapter ton message")
+
+     quand on a un seul champs dans fields alors on peut enlever les accolades comme ceci :
+
+     @UniqueEntity(fields="email",
+
+--------------------------------------------------------------- Video 9 -------------------------------------------------------------------------------------
