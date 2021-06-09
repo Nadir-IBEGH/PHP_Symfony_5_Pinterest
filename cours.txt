@@ -883,3 +883,30 @@ Gérer la partie validation de données
      @UniqueEntity(fields="email",
 
 --------------------------------------------------------------- Video 9 -------------------------------------------------------------------------------------
+
+améliorer la sécurité de notre application :
+
+pour le moment le logout c'est juste un lien / une requete GET : il faut éviter de faire des requete GET sur opérations qui vont modifier le state de notre application
+
+Avec un lien GET on est vulnérable au fail CSRF
+
+remarque on peut rajouter la protection csrf même-ci on avait la requete GET
+
+Pour le lien de déconnexion on change d'état ( de déconnexion a la connexion ) donc vaut mieux utiliser une autre méthode plutot que GET
+
+On va utiliser la méthode post avec la protection CSRF et on verra après GET avec CSRF
+
+
+Pour voir la configuration du bundle security on fait ceci :
+
+symfony console config:dump security
+
+pour la configuration quand on voit (tild) ~ vaut dire que c'est null
+
+pour voir ce qu'on peut utiliser avec le token on tape :
+
+symfony console debug:autowiring token  et on tombe sur :
+
+ Manages CSRF tokens.
+ Symfony\Component\Security\Csrf\CsrfTokenManagerInterface (security.csrf.token_manager)
+

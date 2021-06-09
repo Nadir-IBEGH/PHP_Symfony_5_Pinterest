@@ -24,6 +24,7 @@ security:
             logout:
                 path: app_logout
                 # where to redirect after logout
+                csrf_token_generator: Symfony\Component\Security\Csrf\CsrfTokenManagerInterface
                 target: app_home
             remember_me:
                 secret: '%kernel.secret%'
