@@ -1028,3 +1028,9 @@ dans google :
 symfony best practices
 
 https://symfony.com/doc/current/best_practices.html
+
+dans notre système actuell nous avons pour confirmer l'inscription alors il faut etre connecté
+
+si on est pas connecté cette ligne va ne rediriger vers la page de login :
+
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
