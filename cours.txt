@@ -910,3 +910,57 @@ symfony console debug:autowiring token  et on tombe sur :
  Manages CSRF tokens.
  Symfony\Component\Security\Csrf\CsrfTokenManagerInterface (security.csrf.token_manager)
 
+on a une autre solution avec GET à la minute 32;
+
+Encore plus simple : en utilise ceci :
+
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ logout_path('main') }}">Logout</a>
+                    </li>
+
+                    main : c'est le nom du firewall dans security.yaml
+
+                    une autre solution :
+
+                     <li class="nav-item">
+                        <a class="nav-link" href="{{ logout_url('main') }}">Logout</a>
+                    </li>
+
+
+        Nous nous utilisons la méthode POST
+
+
+
+Ajouter un lien au niveau de la page d'accueil pour supprimer un Pin :
+
+problème : chaque a un formulaire et tout les formulaire ont le même id donc : on ne supprime pas le bon élément
+
+Voila le code a utiliser au cas ou on supprime sur la page index :
+
+           <a href="#"
+                               onclick="event.preventDefault();confirm('Are you confirm ?') && document.getElementById('js-delete-form-{{ pin.id }}').submit();"
+                               class="ml-3 mb-3 btn btn-danger">&times; Delete</a>
+                            <form id="js-delete-form-{{ pin.id }}" action="{{ path('app_pins_delete', {id:pin.id}) }}" method="post"
+                                  style="display: none">
+                                <input type="hidden" name="crsf_token" value="{{ csrf_token('pin_deletion_' ~ pin.id) }}">
+                                <input type="hidden" name="_method" value="DELETE">
+                            </form>
+
+
+
+
+Au lieu d'ajouter les a Pin un a un alors il est préférable d'avoir une commande qu'on va lancer et elle nous crée les données dont on a besoin (Fixture)
+
+https://symfony.com/doc/current/bundles/DoctrineFixturesBundle/index.html
+
+dans notre exemple on utilise  mockaroo.com (il nous permet de générer de fausses données,
+on aurra un code sql a éxécuter et ca va marcher, c'est simple a utiliser par rapport aux autres
+
+Regarder la formation devenir pro symfony pour apprendre mieux sur les fixtures
+
+Pour voir le code source en ligne (Github) :
+
+https://github.com/mercuryseries/panterest
+
+error404 path : Fix layout path for the 404 error template

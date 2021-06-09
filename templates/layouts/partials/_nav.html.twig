@@ -21,6 +21,11 @@
                     <form id="js-logout-form" action="{{ path('app_logout') }}" method="POST" style="display: none;">
                         <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
                     </form>
+                    {#  une autre solution avec la methode GET
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ logout_path('main') }}">Logout</a>
+                    </li>
+                    #}
                 {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('app_register') }}">Register</a>
