@@ -964,3 +964,67 @@ Pour voir le code source en ligne (Github) :
 https://github.com/mercuryseries/panterest
 
 error404 path : Fix layout path for the 404 error template
+
+pour eviter d'ecrire/répéter a plusieurs endroit :
+           les variables : 'noreplay@nadir.com', 'Panterest' comme dans
+                ->from(new Address('noreplay@nadir.com', 'Panterest'))  //RegistrationController
+                alors on va définir des variables d'environnement dans le fichier .env
+
+dans le fichier .env
+MAIL_FROM_ADRESS=hello@panterest.com
+MAIL_FROM_NAME="Panterest bot"
+
+comment acceder dans un Controller au variable de .env :
+
+google : recherche symfony dotenv :
+
+https://symfony.com/doc/4.1/components/dotenv.html
+
+Access the value with getenv() in your code:
+$dbUser = getenv('MAIL_FROM_ADRESS');
+ ou bien :
+$_ENV['MAIL_FROM_ADRESS']
+
+
+Imporant : si on a des variables qui ne change pas d'un environnement
+à un autre alors au lieu d'utiliser .env en utilise les paramètres du container
+
+aller dans config/service.yaml
+
+parameters:
+    app.mail_from_name:
+    app.mail_from_address:
+
+    puis pour récupérer les variables dans le code :
+
+    $this->getParameter('app.mail_from_address')
+
+
+on préfixe les variable avec app. pour ne pas les confondre avec les variables des bundles ou du système
+
+on utilise les vaiables d'env (.env )si on a des variables qui changes d'un environnement à un autre
+
+si on a des variables qui ne change pas d'un env a un autre  alors on utilise les paramètres du container service.yaml
+
+
+si on veut par exemple utiliser une constante dans le controller PinsController alors en fait ceci :
+
+dans l'entité pin:
+
+public const NUM_ITEMS_PER_PAGE = 20 ; // nombre items par page, pour la pagination par exemple
+
+Dans le controller en fait  Pin::NUM_ITEMS_PER_PAGE; beaucoup mieux que d'ecrire un chiffre en dur dans le controller
+
+dans service.yaml en peut récupérer des variables dans .env comme dans mailer.yaml
+example dans mailer.yaml
+framework:
+    mailer:
+        dsn: '%env(MAILER_DSN)%'
+
+
+Les bonnes pratiques de Symfony :
+
+dans google :
+symfony best practices
+
+https://symfony.com/doc/current/best_practices.html
