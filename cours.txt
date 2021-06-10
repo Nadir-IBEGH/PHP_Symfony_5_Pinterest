@@ -1087,3 +1087,19 @@ php bin/console doctrine:migrations:migrate
 
 quand on réinistialise le mot de passe en réponds avec le même message que ce soit on a trouvé
 l'email ou pas, on donne toujours le minimum d'info
+
+Note formulaire : si on a un formualire qui est asscocié  a une entité alors le contraintes sont dans l'entité sinon dans le FormType
+
+on peut faire ceci :
+
+
+   $user = $this->getDoctrine()->getRepository(User::class)->findOneBy([
+            'email' => $emailFormData,
+        ]);
+
+        mais aussi
+
+
+   $user = $this->getDoctrine()->getRepository(User::class)->findOneByEmail($emailFormData);
+   $user = $this->getDoctrine()->getRepository(User::class)->findOneByUsername($username);
+   etc .......
