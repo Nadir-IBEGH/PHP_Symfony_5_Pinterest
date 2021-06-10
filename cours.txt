@@ -1032,5 +1032,58 @@ https://symfony.com/doc/current/best_practices.html
 dans notre système actuell nous avons pour confirmer l'inscription alors il faut etre connecté
 
 si on est pas connecté cette ligne va ne rediriger vers la page de login :
-
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+
+challenge : si l'utilisateur n'a recu de mail de confirmation donner lui la possibilité de renvoyer un nouveau lien de vérification
+
+et avant de créer un pin l'utilisateur doit confirmer son email
+
+comment faire : extraire la partie envoie de mail  (EmailVerifier) mis la dans une class dédié
+
+commit : "remove unecessary parenthesis"  : supprimer les parenthèses inutile
+
+
+------------------------------------------------------- Video 10 (Réinitialisation de mot de passe)----------------------------------------------
+il y a une commande qui permet de générer le code nécessaire
+
+1. tapez : symfony console
+2.   make:reset-password Create controller, entity, and repositories for use with symfonycasts/reset-password-bundle
+3.   symfony console  make:reset-password
+4.   composer require symfonycasts/reset-password-bundle
+5.   symfony console make:reset-password
+
+répodez
+1. entrer
+2. hello@parlonscode.com
+3. name :  Panterest
+
+
+suivant :
+Next:
+   1) Run "php bin/console make:migration" to generate a migration for the new "App\Entity\ResetPasswordRequest" entity.
+   2) Review forms in "src/Form" to customize validation and labels.
+   3) Review and customize the templates in `templates/reset_password`.
+   4) Make sure your MAILER_DSN env var has the correct settings.
+   5) Create a "forgot your password link" to the app_forgot_password_request route on your login form.
+
+ Then open your browser, go to "/reset-password" and enjoy!
+
+
+ avant de jouer la migration, ajouter dans l'entité :
+
+ ResetPasswordRequest
+
+  * @ORM\Table(name="reset_password_requests")
+puis :
+php bin/console make:migration
+
+    public function getDescription(): string
+    {
+        return 'Create reset_password_requests table';
+    }
+
+php bin/console doctrine:migrations:migrate
+
+quand on réinistialise le mot de passe en réponds avec le même message que ce soit on a trouvé
+l'email ou pas, on donne toujours le minimum d'info
