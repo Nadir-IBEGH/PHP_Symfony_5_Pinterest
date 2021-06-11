@@ -1103,3 +1103,16 @@ on peut faire ceci :
    $user = $this->getDoctrine()->getRepository(User::class)->findOneByEmail($emailFormData);
    $user = $this->getDoctrine()->getRepository(User::class)->findOneByUsername($username);
    etc .......
+
+
+--------------------Gérer le profil de l'utilisateur --------------------
+modifier ces infos personnels
+changer son mot de passe
+
+créer un controller AccountController
+
+symfony console make:controller account    (symfony rajoutera le suffix)
+
+pour gérer l'avatar
+
+http://fr.gravatar.com/
