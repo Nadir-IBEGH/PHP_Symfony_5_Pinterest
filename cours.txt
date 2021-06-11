@@ -1116,3 +1116,11 @@ symfony console make:controller account    (symfony rajoutera le suffix)
 pour gérer l'avatar
 
 http://fr.gravatar.com/
+
+-----------------------------page edition de compte----------------------------
+
+créer un formulaire pour éditer le profil
+
+symfony console make:form UserForm
+
+le forulaire est associé à l'entité User
