@@ -229,7 +229,7 @@ class User implements UserInterface
 
     public function getGravatar(?int $size = 200):string
     {
-        return sprintf("https://www.gravatar.com/avatar/%s/?s=%d", md5(strtolower((trim($this->getEmail())))),$size);
+        return sprintf("https://www.gravatar.com/avatar/%s?s=%d", md5(strtolower((trim($this->getEmail())))),$size);
     }
 
 
