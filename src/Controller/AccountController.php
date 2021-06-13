@@ -12,10 +12,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
+/**
+ * @Route("/account")
+ * Class AccountController
+ * @package App\Controller
+ */
 class AccountController extends AbstractController
 {
     /**
-     * @Route("/account", name="app_account", methods="GET")
+     * @Route("", name="app_account", methods="GET")
      */
     public function show(): Response
     {
@@ -26,7 +31,7 @@ class AccountController extends AbstractController
     }
 
     /**
-     * @Route("/account/edit", name="app_account_edit", methods={"GET","PUT"} )
+     * @Route("/edit", name="app_account_edit", methods={"GET","PUT"} )
      * @param Request $request
      * @param EntityManagerInterface $em
      * @return Response
@@ -50,7 +55,7 @@ class AccountController extends AbstractController
     }
 
     /**
-     * @Route("/account/change-password", name="app_account_change_password", methods={"GET","POST"})
+     * @Route("/change-password", name="app_account_change_password", methods={"GET","POST"})
      * @param Request $request
      * @param EntityManagerInterface $em
      * @param UserPasswordEncoderInterface $passwordEncoder
@@ -59,7 +64,7 @@ class AccountController extends AbstractController
     public function changePassword(Request $request, EntityManagerInterface $em, UserPasswordEncoderInterface $passwordEncoder): Response
     {
         $user = $this->getUser();
-        $form = $this->createForm(ChangePasswordFormType::class);
+        $form = $this->createForm(ChangePasswordFormType::class,null, ['current_password_is_required'=> true]);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){

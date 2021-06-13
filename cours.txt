@@ -1131,4 +1131,14 @@ le formulaire de changement de mot de passe ressemble a celui de reset
 
 en utlise le formulaire de reset password
 
+une fois que ca marche, en ajoute le mot de passe courant
 
+----------------------------ajouter un champ : mot de passe courant---------------------
+
+on vérifie si le mot de passe courant est bon sinon en change rien
+
+on passeune option :  ['current_password_is_required'=> true] lors de la creation du formulaire pour afficher le champs currentPassword
+
+        $form = $this->createForm(ChangePasswordFormType::class,null, ['current_password_is_required'=> true]);
+
+important : en peut passer des paramètres au formulaire (FormType) depuis la méthod  createForm($option)
