@@ -1124,3 +1124,11 @@ créer un formulaire pour éditer le profil
 symfony console make:form UserForm
 
 le forulaire est associé à l'entité User
+
+-------------------------------------------changer de mot de passe--------------------------------------
+
+le formulaire de changement de mot de passe ressemble a celui de reset
+
+en utlise le formulaire de reset password
+
+
