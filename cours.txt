@@ -1142,3 +1142,13 @@ on passeune option :  ['current_password_is_required'=> true] lors de la creatio
         $form = $this->createForm(ChangePasswordFormType::class,null, ['current_password_is_required'=> true]);
 
 important : en peut passer des paramètres au formulaire (FormType) depuis la méthod  createForm($option)
+
+
+----------------------------------- (video11) Épisode 11/11 Autorisation - Gestion des droits d'accès -------------------------------------------------
+
+En crée un pin uniquement si on a confirmé (activer notre compte)
+
+pour éditer un pin il faut etre le createur du pin
+
+
+On touche a la notion d'évenement eventSubscriber  : ajoute un message une fois que on est déconnnecté
