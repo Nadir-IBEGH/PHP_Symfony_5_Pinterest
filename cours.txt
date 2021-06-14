@@ -1151,4 +1151,124 @@ En crée un pin uniquement si on a confirmé (activer notre compte)
 pour éditer un pin il faut etre le createur du pin
 
 
-On touche a la notion d'évenement eventSubscriber  : ajoute un message une fois que on est déconnnecté
+On touche a la notion d'évenement EventSubscriber  : ajoute un message une fois que on est déconnnecté
+
+
+Ajouter un message a la deconnexion :
+
+a la deconnexion symfony va emmetre un evenement ayant pour nom logoutEvent qui sera dispatché
+
+En peut faire pareil avec EventListener (par rapport a event dispatcher), voir la doc
+
+En va créer un EventSubscriber qui va s'inscrire a un évenement
+
+
+1. symfony console make:subscriber LogoutEventSubscriber
+2. en ne demande a quelle evenment on va suscrire (beaucoup d'evenement existe):
+
+nous en va choisir :
+
+* Symfony\Component\Security\Http\Event\LogoutEvent (Symfony\Component\Security\Http\Event\LogoutEvent)
+
+3. tapez dans le terminale :
+Symfony\Component\Security\Http\Event\LogoutEvent
+
+  What event do you want to subscribe to?:
+ > Symfony\Component\Security\Http\Event\LogoutEvent
+
+
+l'eventSubscriber ( LogoutEventSubscriber ) doit obligatoirement implémenter l'interface EventSubscriberInterface ( si comme ca que symfony va reconnaitre l'event )
+
+
+pour générer une url dans l'evenet :
+
+symfony console debug:autowiring url :
+
+ UrlGeneratorInterface is the interface that all URL generator classes must implement.
+ Symfony\Component\Routing\Generator\UrlGeneratorInterface (router.default)
+
+important :           -----------première solution--------------
+
+class LogoutEventSubscriber implements EventSubscriberInterface
+{
+
+    private $urlGenerator;
+    public function __construct(UrlGeneratorInterface $urlGenerator)
+    {
+        $this->urlGenerator = $urlGenerator;
+    }
+
+    public function onLogoutEvent(LogoutEvent $event)
+    {
+        $event->getRequest()->getSession()->getFlashBag()->add(
+            'success',
+            'Logged out successfully!'
+        );
+
+        $event->setResponse(new RedirectResponse($this->urlGenerator->generate('app_home')));
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return [
+            LogoutEvent::class => 'onLogoutEvent',
+        ];
+    }
+}
+
+important :           -----------soconde solution--------------
+
+
+en peut faire aussi:
+
+symfony console debug:autowiring flash
+
+The following classes & interfaces can be used as type-hints when autowiring:
+ (only showing classes/interfaces matching flash)
+
+ FlashBagInterface.
+ Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface (session.flash_bag)
+
+and
+
+symfony console debug:autowiring router
+
+ RouterInterface is the interface that all Router classes must implement.
+ Symfony\Component\Routing\RouterInterface (router.default)
+
+
+en peut uriliser RouterInterface a la place de UrlGeneratorInterface  car le premier hérite du deuxième
+
+class LogoutEventSubscriber implements EventSubscriberInterface
+{
+
+    private $urlGenerator;
+    private $flashBag;
+
+
+    public function __construct(FlashBagInterface $flashBag,UrlGeneratorInterface $urlGenerator)
+    {
+        $this->urlGenerator = $urlGenerator;
+        $this->flashBag = $flashBag;
+    }
+
+    public function onLogoutEvent(LogoutEvent $event)
+    {
+        $this->flashBag->add(
+            'success',
+            'Logged out successfully!'
+        );
+
+        $event->setResponse(new RedirectResponse($this->urlGenerator->generate('app_home')));
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return [
+            LogoutEvent::class => 'onLogoutEvent',
+        ];
+    }
+}
+
+
+
