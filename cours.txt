@@ -1270,5 +1270,57 @@ class LogoutEventSubscriber implements EventSubscriberInterface
     }
 }
 
+petit rappel : en peut acceder a notre utilisateur via le token  : comme dans LoginFormAuthentificatorAuthenticator
+
+comment faire :depuis notre évenement en peut acceder a note token puis vers le user :
+
+$event->getToken()->getUser();
+
+en peut aussi injecter Securiry $security dans le constructeur puis :
+
+$this->security->getUser();
+
+-------------------------------------------------partie autorisation-------------------------------------------
+en va voir comment gérer les autorisation en symfony
+
+en utilise l'attibut $roles dans l'entité User
+
+pour voir a quoi correspond une page d'érreur en prod en fait ceci:
+
+https://127.0.0.1:8000/_error/403
 
 
+tapez dans google access_control symfony : pour des chose avancer
+
+https://symfony.com/doc/current/security/access_control.html
+
+
+en peut utiliser l'annotation isGranted pour les controles d'accès
+
+
+si on veut faire un contole d'accès au niveau de twig alors en fait ceci :
+
+pour afficher ou cacher un block selon le type(role) de d'utilisateur (ADMIN, USER...)
+
+{% if (is_granted('ROLE_ADMIN') %}
+  <p>Cool</p>
+{% endif %}
+
+Dans cette application (pinterest) en on n'a pas de role ADMIN (uniquement user)
+
+si on veut faire controler l'accès au controlleur AccountController :
+
+dans sécurity.yaml en fait ceci :
+
+    access_control:
+         - { path: ^/admin, roles: ROLE_USER }    --> uniquement les utilisateurs connecté peuvent acceder
+
+  si on essair d'acceder par exemple à la page :
+
+https://127.0.0.1:8000/account/change-password
+
+alors on sera redirigé vers la page login grace a la méthode start
+
+(start permet de dire qu'est ce qui va se passer si l'utilisateur tente d'accreder a une page sécurisé alors qu'il n'ai pas connecté))
+
+start est dans LoginFormAuthentificatorAuthenticator (dans la class mère) qui hérite de AbstractFormLoginAuthenticator

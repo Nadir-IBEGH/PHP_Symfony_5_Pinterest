@@ -10,10 +10,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @Route("/account")
+ * @IsGranted("ROLE_USER")
  * Class AccountController
  * @package App\Controller
  */
@@ -24,9 +26,6 @@ class AccountController extends AbstractController
      */
     public function show(): Response
     {
-        if (!$this->getUser()) {
-            return $this->redirectToRoute('app_home');
-        }
         return $this->render('account/show.html.twig');
     }
 
@@ -38,9 +37,6 @@ class AccountController extends AbstractController
      */
     public function edit(Request $request, EntityManagerInterface $em): Response
     {
-        if (!$this->getUser()) {
-            return $this->redirectToRoute('app_home');
-        }
         $user = $this->getUser();
         $form = $this->createForm(UserFormType::class, $user, ['method' => 'PUT']);
         $form->handleRequest($request);
