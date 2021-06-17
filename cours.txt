@@ -653,6 +653,9 @@ Video a regarder : Authentification et Autorisation avec Symfony 5
 https://www.youtube.com/watch?v=wCvGbv6E0AI
 
 
+message d'érreur pour la page 403 : "Customize 403 page"
+
+
 ----------------------------------------------Video 7---------------------------------------------
 
 text-break : pour éviter que le text sort du div
@@ -1324,3 +1327,37 @@ alors on sera redirigé vers la page login grace a la méthode start
 (start permet de dire qu'est ce qui va se passer si l'utilisateur tente d'accreder a une page sécurisé alors qu'il n'ai pas connecté))
 
 start est dans LoginFormAuthentificatorAuthenticator (dans la class mère) qui hérite de AbstractFormLoginAuthenticator
+
+
+      une autre anotation equivalente a isGranted
+
+     * @Security("is_granted('ROLE_USER') && user.isVerified()") : permet de vérifier que l'utilisateur est connecté ainsi que son compte et verifié
+
+
+     * @Security("is_granted('ROLE_USER') && user.isVerified() && pin.getUser() == user")
+
+
+
+Note importante : a chaque fois qu'en utilise isGranted symfony fait appelle au Voter
+
+
+Créer un Voter :
+
+1. Symfony console make:voter
+2. Donner le nom : PinVoter
+
+pour les droit de EDIT et DELETE sont géné avec le PinVoter alors que CREATE est Gerer avec l'annotation : @Security("is_granted('ROLE_USER') && user.isVerified()")
+
+Utiliser les voter pour la gestion des droit, c'est facile a faire
+
+
+        $this->denyAccessUnlessGranted('PIN_EDIT', $pin); est equivalent à
+             * @IsGranted("PIN_EDIT",subject="pin")
+
+
+
+
+
+
+
+

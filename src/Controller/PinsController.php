@@ -11,7 +11,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class PinsController extends AbstractController
 {
 
@@ -47,6 +48,7 @@ class PinsController extends AbstractController
 
     /**
      * @Route("/pins/create", name="app_pins_create")
+     * @Security("is_granted('ROLE_USER') && user.isVerified()")
      * @param Request $request
      * @return Response
      */
@@ -68,6 +70,7 @@ class PinsController extends AbstractController
 
     /**
      * @Route("/pins/{id<[0-9]+>}/edit", name="app_pins_edit", methods={"GET","PUT"})
+     * @IsGranted("PIN_EDIT",subject="pin")
      * @param Pin $pin
      * @param Request $request
      * @return Response
@@ -96,6 +99,8 @@ class PinsController extends AbstractController
      */
     public function delete(Pin $pin, Request $request): Response
     {
+        $this->denyAccessUnlessGranted('PIN_DELETE', $pin);
+
         if ($this->isCsrfTokenValid('pin_deletion_' . $pin->getId(), $request->request->get('crsf_token'))) {
             $this->em->remove($pin);
             $this->em->flush();

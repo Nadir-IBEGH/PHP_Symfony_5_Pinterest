@@ -22,6 +22,7 @@
                         </small>
                     </p>
                     <p class="pt-3 text-break">{{ pin.description }} </p>
+                    {% if (is_granted('PIN_EDIT', pin) or is_granted('PIN_DELETE', pin))%}
                     <div class="pt-3">
                         <a href="{{ path('app_pins_edit', {id:pin.id}) }}" class="btn btn-light">Edit</a>
                         <a href="#"
@@ -33,6 +34,7 @@
                             <input type="hidden" name="_method" value="DELETE">
                         </form>
                     </div>
+                    {% endif %}
                 </div>
             </article>
         </div>
