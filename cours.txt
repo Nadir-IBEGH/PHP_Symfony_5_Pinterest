@@ -1357,7 +1357,30 @@ Utiliser les voter pour la gestion des droit, c'est facile a faire
 
 
 
+si dans une extension on veut acceder a l'utilisateur alors en utilise Security (injection dans le constrctur)
+
+      exemple : $security->isGranted('ROLE_ADMIN');
 
 
+Symfony security : dans google
+https://symfony.com/doc/current/security.html#checking-to-see-if-a-user-is-logged-in-is-authenticated-fully
+
+dansla fonction login dans SecurityController en peut remplacer le code suivant :
+
+         if ($this->getUser()) {
+             $this->addFlash('error','Already logged in!');
+             return $this->redirectToRoute('app_home');
+         }
+
+         par une anotation :
+
+         * @IsGranted("IS_ANONYMOUS")       ---> accès uniquement pour les utilisateur anonyme (non connecté)
+
+
+
+     pour la méthode edit du profil en rajoute cette annotation : on ne peut pas modifier le profil si on est connecté avec le coockies
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+
+     En fait de même pour la méthode changePassword (on ne peut pas modifier le mot de passe si on est connecté avec le cookie)
 
 

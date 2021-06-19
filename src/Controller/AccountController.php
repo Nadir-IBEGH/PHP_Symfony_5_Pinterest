@@ -15,7 +15,6 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @Route("/account")
- * @IsGranted("ROLE_USER")
  * Class AccountController
  * @package App\Controller
  */
@@ -23,6 +22,7 @@ class AccountController extends AbstractController
 {
     /**
      * @Route("", name="app_account", methods="GET")
+     * @IsGranted("ROLE_USER")
      */
     public function show(): Response
     {
@@ -31,6 +31,7 @@ class AccountController extends AbstractController
 
     /**
      * @Route("/edit", name="app_account_edit", methods={"GET","PUT"} )
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      * @param Request $request
      * @param EntityManagerInterface $em
      * @return Response
@@ -52,6 +53,7 @@ class AccountController extends AbstractController
 
     /**
      * @Route("/change-password", name="app_account_change_password", methods={"GET","POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      * @param Request $request
      * @param EntityManagerInterface $em
      * @param UserPasswordEncoderInterface $passwordEncoder
