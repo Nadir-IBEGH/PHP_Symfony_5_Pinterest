@@ -30,7 +30,7 @@ class AccountController extends AbstractController
     }
 
     /**
-     * @Route("/edit", name="app_account_edit", methods={"GET","PUT"} )
+     * @Route("/edit", name="app_account_edit", methods={"GET","PATCH"} )
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      * @param Request $request
      * @param EntityManagerInterface $em
@@ -39,11 +39,11 @@ class AccountController extends AbstractController
     public function edit(Request $request, EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
-        $form = $this->createForm(UserFormType::class, $user, ['method' => 'PUT']);
+        $form = $this->createForm(UserFormType::class, $user, ['method' => 'PATCH']);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush($user);
-            $this->addFlash('success','Account updated successfully ');
+            $this->addFlash('success', 'Account updated successfully ');
             return $this->redirectToRoute('app_account');
         }
         return $this->render('account/edit.html.twig', [
@@ -52,7 +52,7 @@ class AccountController extends AbstractController
     }
 
     /**
-     * @Route("/change-password", name="app_account_change_password", methods={"GET","POST"})
+     * @Route("/change-password", name="app_account_change_password", methods={"GET","PATCH"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      * @param Request $request
      * @param EntityManagerInterface $em
@@ -62,18 +62,24 @@ class AccountController extends AbstractController
     public function changePassword(Request $request, EntityManagerInterface $em, UserPasswordEncoderInterface $passwordEncoder): Response
     {
         $user = $this->getUser();
-        $form = $this->createForm(ChangePasswordFormType::class,null, ['current_password_is_required'=> true]);
+        $form = $this->createForm(ChangePasswordFormType::class,
+            null,
+            [
+                'current_password_is_required' => true,
+                'method' => 'PATCH'
+            ]
+        );
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             $user->setPassword($passwordEncoder->encodePassword($user, $form['plainPassword']->getData()));
             $em->flush();
-            $this->addFlash('success','Password updated successfully');
+            $this->addFlash('success', 'Password updated successfully');
             return $this->redirectToRoute('app_account');
         }
 
         return $this->render('account/change_password.html.twig', [
-            'form' => $form ->createView()
+            'form' => $form->createView()
         ]);
     }
 }

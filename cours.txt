@@ -1384,3 +1384,58 @@ dansla fonction login dans SecurityController en peut remplacer le code suivant 
      En fait de même pour la méthode changePassword (on ne peut pas modifier le mot de passe si on est connecté avec le cookie)
 
 
+
+
+
+     Remarque : nous n'avons pas vérifier que quand en modifie un compte (profil) que on en est le propiètaire du compte
+     cela se fait grace aux annotatios :
+          * @IsGranted("IS_AUTHENTICATED_FULLY")
+          * @IsGranted("ROLE_USER")
+
+     la stratégie pour notre projet : au début on en a laissé toute les routes ouvertes a tout le monde puis
+     en les sécurise petit à petit
+
+     si en veux proceder au contraire cad : en sécurise l'accès a toute les pages sauf quelqeu'unes alors en fait ceci:
+
+
+    access_control:    toute les pages sont sécurisés sauf la page login
+        - { path: ^/login$, roles: IS_ANONYMOUS }       le $ est obligatoire car il délimite la chaine (login mais pas loginxxx)
+        - { path: ^/account/edit$, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/, roles: ROLE_USER }
+
+
+   on donne un nouveau roles au User avec la méthode setRoles
+
+rappel des verbes http :
+
+GET => LIRE
+POST => CREER
+PUT/PATCH => MODIFIER
+DELETE => SUPPRIMER
+
+
+Différence entre PATCH et PUT :
+
+PATCH : une modification partiel
+PUT : une modification complète
+
+dans :
+     * @Route("/change-password", name="app_account_change_password", methods={"GET","PATCH"})
+en mis PATCH car en modifie uniquement le password et n'on pas les autres infos
+
+
+cours a regarder :
+
+1. Grafikart
+2.Lior Chamla
+3. Youan dev
+4. openclassroom
+5. Ben Open   (sur youtube) API PLATEFORME
+6. Nouvelle-techno.fr
+7. https://www.smaine.me/
+8. https://symfonycasts.com/   --> aprendre symfony via des video
+
+
+pour voir les nouvelles videos qui arrivent :  https://tutomarks.fr/
+
+
